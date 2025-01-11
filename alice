@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+
+import palette.hex  as hexp
+import palette.rgb  as rgbp
+import palette.util as util
+
+import argparse
+
+parser = argparse.ArgumentParser(
+  prog="alice",
+  description="query color info from the alice color scheme",
+  epilog="Alice (https://github.com/wreedb/alice)"
+)
+
+parser.add_argument(
+  "-s", "--scheme",
+  help="scheme variant to use: normal,bright"
+)
+parser.add_argument(
+  "-f", "--format",
+  help="color format to use: rgb,hex"
+)
+
+parser.add_argument(
+  "-c","--color",
+  help="output a single color (e.g., black,cyan,magenta,red)"
+)
+
+args = parser.parse_args()
+
+builder = {
+  "scheme": "",
+  "format": ""
+}
+
+match args.scheme:
+  case "normal":
+    builder["scheme"] = "normal"
+  case "bright":
+    builder["scheme"] = "bright"
+  case _:
+    print("Invalid argument to -s/--scheme")
+    print("Expeceted one of: normal,bright")
+    exit(1)
+
+match args.format:
+  case "rgb":
+    builder["format"] = "rgb"
+  case "hex":
+    builder["format"] = "hex"
+  case _:
+    print("invalid argument to -f/--format")
+    print("expected one of: hex,rgb")
+    exit(1)
+
+if args.color:
+  match args.color:
+    case "black":
+      color_index = 0
+    case "red":
+      color_index = 1
+    case "green":
+      color_index = 2
+    case "yellow":
+      color_index = 3
+    case "blue":
+      color_index = 4
+    case "magenta":
+      color_index = 5
+    case "cyan":
+      color_index = 6
+    case "white":
+      color_index = 7
+    case _:
+      print("invalid argument to -c/--color")
+      print("expected one of:")
+      print("black,red,green,yellow,blue,magenta,cyan,white")
+      exit(1)
+
+  match builder["scheme"]:
+
+    case "normal":
+      if builder["format"] == "rgb":
+        out = util.get_rgb_color(rgbp.normal, color_index)
+        print(out)
+      elif builder["format"] == "hex":
+        out = util.get_hex_color(hexp.normal, color_index)
+        print(out)
+      else:
+        print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
+        exit(1)
+
+    case "bright":
+      if builder["format"] == "rgb":
+        out = util.get_rgb_color(rgbp.bright, color_index)
+        print(out)
+      elif builder["format"] == "hex":
+        out = util.get_hex_color(hexp.bright, color_index)
+        print(out)
+      else:
+        print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
+        exit(1)
+
+    case _:
+      print("Internal error: (scheme = %s)\nPlease file an issue." % (builder["scheme"]))
+      exit(1)
+
+else:
+
+  match builder["scheme"]:
+
+    case "normal":
+      if builder["format"] == "rgb":
+        out = util.get_rgb_scheme(rgbp.normal)
+        print(out)
+      elif builder["format"] == "hex":
+        out = util.get_hex_scheme(hexp.normal)
+        print(out)
+      else:
+        print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
+        exit(1)
+
+    case "bright":
+      if builder["format"] == "rgb":
+        out = util.get_rgb_scheme(rgbp.bright)
+        print(out)
+      elif builder["format"] == "hex":
+        out = util.get_hex_scheme(hexp.bright)
+        print(out)
+      else:
+        print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
+        exit(1)
+
+
+    case _:
+      print("Internal error: (scheme = %s)\nPlease file an issue." % (builder["scheme"]))
+      exit(1)
+
