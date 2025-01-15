@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 
-import palette.hex  as hexp
-import palette.rgb  as rgbp
-import palette.util as util
+#import palette.hex  as hexp
+#import palette.rgb  as rgbp
+#import palette.util as util
 
-import argparse
+import alice.palette as palette
+import alice.util as util
 
-parser = argparse.ArgumentParser(
+from argparse import ArgumentParser
+
+parser = ArgumentParser(
   prog="alice",
   description="query color info from the alice color scheme",
   epilog="Alice (https://github.com/wreedb/alice)"
@@ -14,24 +17,35 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument(
   "-s", "--scheme",
-  help="scheme variant to use: normal,bright"
+  help="scheme variant to use: [normal (default), bright]"
 )
 parser.add_argument(
   "-f", "--format",
-  help="color format to use: rgb,hex"
+  help="color format to use: [hex, rgb]",
+  required=True
 )
 
 parser.add_argument(
   "-c","--color",
-  help="output a single color (e.g., black,cyan,magenta,red)"
+  help="output a single color: [black,red,green,yellow,blue,magenta,cyan,white]"
+)
+
+parser.add_argument(
+  "-p", "--preview",
+  help="show a preview of the color(s) in your terminal, NOTE: this only works for 'truecolor' terminals",
+  action="store_true"
 )
 
 args = parser.parse_args()
 
 builder = {
+  "preview": False,
   "scheme": "",
   "format": ""
 }
+
+if args.preview:
+  builder["preview"] = True
 
 match args.scheme:
   case "normal":
@@ -81,10 +95,10 @@ if args.color:
 
     case "normal":
       if builder["format"] == "rgb":
-        out = util.get_rgb_color(rgbp.normal, color_index)
+        out = util.get_rgb_color(palette.normal["rgb"], color_index, builder["preview"], palette.normal["rgb"][color_index])
         print(out)
       elif builder["format"] == "hex":
-        out = util.get_hex_color(hexp.normal, color_index)
+        out = util.get_hex_color(palette.normal["hex"], color_index, builder["preview"], palette.normal["rgb"][color_index])
         print(out)
       else:
         print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
@@ -92,10 +106,10 @@ if args.color:
 
     case "bright":
       if builder["format"] == "rgb":
-        out = util.get_rgb_color(rgbp.bright, color_index)
+        out = util.get_rgb_color(palette.bright["rgb"], color_index, builder["preview"], palette.bright["rgb"][color_index])
         print(out)
       elif builder["format"] == "hex":
-        out = util.get_hex_color(hexp.bright, color_index)
+        out = util.get_hex_color(palette.bright["hex"], color_index, builder["preview"], palette.bright["rgb"][color_index])
         print(out)
       else:
         print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
@@ -111,10 +125,10 @@ else:
 
     case "normal":
       if builder["format"] == "rgb":
-        out = util.get_rgb_scheme(rgbp.normal)
+        out = util.get_rgb_scheme(palette.normal["rgb"], builder["preview"], palette.normal["rgb"])
         print(out)
       elif builder["format"] == "hex":
-        out = util.get_hex_scheme(hexp.normal)
+        out = util.get_hex_scheme(palette.normal["hex"], builder["preview"], palette.normal["rgb"])
         print(out)
       else:
         print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
@@ -122,10 +136,10 @@ else:
 
     case "bright":
       if builder["format"] == "rgb":
-        out = util.get_rgb_scheme(rgbp.bright)
+        out = util.get_rgb_scheme(palette.bright["rgb"], builder["preview"], palette.bright["rgb"])
         print(out)
       elif builder["format"] == "hex":
-        out = util.get_hex_scheme(hexp.bright)
+        out = util.get_hex_scheme(palette.bright["hex"], builder["preview"], palette.bright["rgb"])
         print(out)
       else:
         print("Internal error: (format = %s)\nPlease file an issue." % (builder["format"]))
