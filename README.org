@@ -11,4 +11,4 @@ for an idea of what it can (and hopefully will be able to) do.
 | hex output | done    |
 | hsl output | planned |
 
-file:assets/preview.png
+#+html: <p align="center"><img src="assets/preview.png"/></p>
