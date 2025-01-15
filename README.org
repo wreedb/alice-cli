@@ -10,3 +10,5 @@ for an idea of what it can (and hopefully will be able to) do.
 | rgb output | done    |
 | hex output | done    |
 | hsl output | planned |
+
+file:assets/preview.png
