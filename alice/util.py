@@ -91,5 +91,5 @@ def get_rgb_color(scheme, index, preview, preview_scheme):
     result += preview_color(preview_scheme[index])
 
   # append the normal rgb code and return it
-  result = string_format(scheme[index])
+  result = string_format_rgb(scheme[index])
   return result
