@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "alice-colorscheme"
+version = "0.0.1"
+authors = [ { name = "Will Reed", email = "wreed@programmer.net" } ]
+description = "Command-line tool for the alice color scheme"
+readme = "README.md"
+license = "BSD-2-CLAUSE"
+license-files = [ "LICENSE" ]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Topic :: Utilities"
+]
+
+requires-python = ">= 3.10"
+
+[project.scripts]
+alice-colorscheme = "alice_colorscheme.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/wreedb/alice-cli"
+Issues = "https://github.com/wreedb/alice-cli/issues"
