@@ -3,74 +3,73 @@
 # @Param: arr = list of 3 integers; representing rgb
 # @Return: string; common "rgb(x,x,x)" format
 def string_format_rgb(arr):
-  return "rgb(%i, %i, %i)" % (arr[0], arr[1], arr[2])
+    return "rgb(%i, %i, %i)" % (arr[0], arr[1], arr[2])
 
-def string_format_hsl(arr):
-  return "hsl(%i%s %i%% %i%%)" % (arr[0], "deg", arr[1], arr[2])
+# @Param: fmt_type = string; "hwb" or "hsl" output formatting
+# @Param: arr = list of 3 integers; representing hwb/hsl color
+# @Return: string; css-style "hwb/hsl(xdeg x% x%)" format
+def string_format_hwb_hsl(fmt_type, arr):
+    return "%s(%i%s %i%% %i%%)" % (fmt_type, arr[0], "deg", arr[1], arr[2])
 
-def get_hsl_scheme(scheme):
-  result = ""
-  length = len(scheme)
-  index = 0
+def get_hwb_hsl_scheme(fmt_type, scheme):
+    output_str = ""
+    len_scheme = len(scheme)
+    index = 0
 
-  while index < length:
-    result += string_format_hsl(scheme[index])
+    while index < len_scheme:
+        output_str += string_format_hwb_hsl(fmt_type, scheme[index])
+        
+        # avoid trailing newline
+        if index != len_scheme - 1:
+            output_str += "\n"
+        
+        index += 1
 
-    if index != length - 1:
-      result += "\n"
+    return output_str
 
-    index += 1
 
-  return result
-
-# @Param: scheme = dict; palette variant p.normal||p.bright["rgb"]
-# @Return: result = string; representation of rgb scheme
+# @Param: scheme = dict; palette variant normal/bright["rgb"]
+# @Return: string; css-style "rgb(x, x, x)" format
 def get_rgb_scheme(scheme):
-  result = ""
-  length = len(scheme)
-  index = 0
-  
-  while index < length:
-    # concat current index's rgb list to string for display
-    # after passed to func for formatting as: "rgb(n, n, n)"
-    result += string_format_rgb(scheme[index])
+    output_str = ""
+    len_scheme = len(scheme)
+    index = 0
     
-    # if NOT last loop iteration; to avoid (extra) trailing newline
-    if index != length - 1:
-      result += "\n"
+    while index < len_scheme:
+        output_str += string_format_rgb(scheme[index])
+        
+        # avoid trailing newline
+        if index != len_scheme - 1:
+            output_str += "\n"
+        
+        index += 1
+    
+    # return display string after full scheme has been iterated over
+    return output_str
 
-    index += 1
-  
-  # return display string after full scheme has been iterated over
-  return result
 
-# @Param: scheme = dict; palette variant p.normal||p.bright["hex"]
-# @Return: result = string; reperesentation of hex scheme
 def get_hex_scheme(scheme):
-  result = ""
-  length = len(scheme)
-  index = 0
+    output_str = ""
+    len_scheme = len(scheme)
+    index = 0
 
-  while index < length:
-    # concat current scheme index to return string
-    result += scheme[index]
+    while index < len_scheme:
+        output_str += scheme[index]
 
-    # if NOT last loop iteration; to avoid (extra) trailing newline
-    if index != length - 1:
-      result += "\n"
+        # avoid trailing newline
+        if index != len_scheme - 1:
+            output_str += "\n"
+        
+        index += 1
     
-    index += 1
-  
-  # return display string after full scheme has been iterated over
-  return result
+    return output_str
 
-# @Param: scheme = dict; palette variant p.normal||p.bright["hex"]
-# @Param: index = int; 0-7 for "black"-"white"
+
 def get_hex_color(scheme, index):
-  return scheme[index]
+    return scheme[index]
 
 def get_rgb_color(scheme, index):
-  return string_format_rgb(scheme[index])
+    return string_format_rgb(scheme[index])
 
-def get_hsl_color(scheme, index):
-  return string_format_hsl(scheme[index])
+def get_hwb_hsl_color(fmt_type, scheme, index):
+    return string_format_hwb_hsl(fmt_type, scheme[index])

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "alice-colorscheme"
-version = "0.0.1"
+version = "0.0.2"
 authors = [ { name = "Will Reed", email = "wreed@programmer.net" } ]
 description = "Command-line tool for the alice color scheme"
 readme = "README.md"
