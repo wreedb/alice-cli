@@ -1,7 +1,10 @@
 root = true
 
-[*.py]
+[*]
 end_of_line = lf
-insert_final_newline = true
+charset = utf-8
+insert_final_newline = false
+
+[*.swift]
 indent_style = space
 indent_size = 4

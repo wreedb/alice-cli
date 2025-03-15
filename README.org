@@ -1,0 +1,55 @@
+#+AUTHOR: Will Reed
+
+This is ~alice~, a querying tool for my color scheme of the same name.
+
+*** Installing
+Prebuilt binaries will be available on the [[https://github.com/wreedb/alice-cli/releases][releases]] page.
+Archives listed with ~-static.tar.gz~ are statically linked
+against the musl C library. The archives contain shell completions
+for bash, fish, zsh and a unix manual page as well.
+
+*** Building
+To build from source, you will need the [[https://swift.org][Swift]] compiler. For linux, I'd recommend
+using the [[https://swiftlang.github.io/swiftly][Swiftly]] tool for installation.
+#+BEGIN_SRC shell
+git clone https://github.com/wreedb/alice-cli; cd alice-cli
+# For a release build
+swift build -c release --static-swift-stdlib
+# For a statically linked release build, which requires the
+# swift musl sdk to be installed
+swift build -c release --swift-sdk x86_64-swift-linux-musl --static-swift-stdlib
+# the binary will be .build/release/alice
+# you can then copy it somewhere in your PATH, for example
+cp .build/release/alice ~/.local/bin/alice
+#+END_SRC
+
+*** Usage
+#+BEGIN_SRC shell
+# Output formatting options: hex, rgb, hsl & hwb
+alice -f rgb # will output the 'normal' scheme in rgb format
+# The scheme defaults to 'normal' but can be passed manually: -s/--scheme
+# Scheme options: bright, normal, and base
+alice -f hex -s bright
+# You can specify a single color: -c/--color
+alice -f hsl -s normal -c green
+# To show a preview of the color along with the output: -p/--preview
+alice -f hwb -s base -c bg -p
+#+END_SRC
+Note: the color preview feature requires a *truecolor* terminal emulator.
+See [[https://github.com/termstandard/colors][this page]] for information and a list of terminals that support this standard.
+Many popular terminal emulators support this out of the box, such as WezTerm, Kitty,
+Ghostty, Foot and Alacritty.
+
+*** Roadmap
+| Feature          |  Status  | 
+|---    -----      |  ------- |
+| Hex format       | complete | 
+| RGB format       | complete | 
+| HSL format       | complete | 
+| HWB format       | complete | 
+| Color Preview    | complete | 
+| Theme Generation | planned  | 
+
+*** Licensing
+This repository is licensed under the GNU General Public License Version 3 (GPL-3.0-or-later)
+[[https://www.gnu.org/licenses/gpl-3.0.en.html][https://www.gnu.org/graphics/gplv3-or-later.svg]]
