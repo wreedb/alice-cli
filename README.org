@@ -1,6 +1,6 @@
 #+AUTHOR: Will Reed
 
-This is ~alice~, a querying tool for my color scheme of the same name.
+This is ~alice~: a querying tool for my color scheme of the same name.
 
 *** Installing
 Prebuilt binaries will be available on the [[https://github.com/wreedb/alice-cli/releases][releases]] page.
@@ -42,7 +42,7 @@ Ghostty, Foot and Alacritty.
 
 *** Roadmap
 | Feature          |  Status  | 
-|---    -----      |  ------- |
+|------------------+----------|
 | Hex format       | complete | 
 | RGB format       | complete | 
 | HSL format       | complete | 
@@ -52,4 +52,3 @@ Ghostty, Foot and Alacritty.
 
 *** Licensing
 This repository is licensed under the GNU General Public License Version 3 (GPL-3.0-or-later)
-[[https://www.gnu.org/licenses/gpl-3.0.en.html][https://www.gnu.org/graphics/gplv3-or-later.svg]]
