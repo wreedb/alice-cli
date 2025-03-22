@@ -3,90 +3,63 @@ swiftc_args_opt := "-Xswiftc -gnone -Xswiftc -O"
 dynamicflags := "-c release --static-swift-stdlib"
 staticflags := "-c release --static-swift-stdlib --swift-sdk x86_64-swift-linux-musl"
 
-default: build
+default:
+    @just -l
 
 build:
-	@echo "Building in debug mode..."
-	{{buildcmd}}
+    @echo -e "\e[1;32m*\e[0m>>> Building in debug mode..."
+    {{buildcmd}}
 
 release: fetch
-	@echo "Building in release mode..."
-	{{buildcmd}} {{dynamicflags}}
+    @echo -e "\e[1;32m*\e[0m>>> Building binary in release mode..."
+    {{buildcmd}} {{dynamicflags}} {{swiftc_args_opt}}
 
-release-musl: fetch
-    @echo "Building statically linked binary in release mode..."
-    {{buildcmd}} {{staticflags}}
+release-static: fetch
+    @echo -e "\e[1;32m*\e[0m>>> Building static binary in release mode..."
+    {{buildcmd}} {{staticflags}} {{swiftc_args_opt}}
 
 fetch:
-	@echo "Fetching project dependencies..."
-	swift package update
-
-strip: release
-	@echo "Stripping binary"
-	cp .build/release/alice ./out/dynamic/alice
-	llvm-strip ./out/release/alice
-
-strip-musl: release-musl
-    @echo "Stripping static binary"
-    cp .build/release/alice ./out/release-musl/alice
-    llvm-strip --strip-all ./out/release-musl/alice
-
-manual:
-	@echo "Generating manual page..."
-	swift package plugin generate-manual
-	cp .build/plugins/GenerateManual/outputs/alice/alice.1 ./out/manual/alice.1
-
-completions:
-    @echo "Generating shell completions..."
-    ./out/release/alice --generate-completion-script bash > ./out/completions/alice.bash
-    ./out/release/alice --generate-completion-script fish > ./out/completions/alice.fish
-    ./out/release/alice --generate-completion-script zsh > ./out/completions/alice.zsh
-
-completions-static:
-    @echo "Generating shell completions..."
-    ./out/release-musl/alice --generate-completion-script bash > ./out/completions/alice.bash
-    ./out/release-musl/alice --generate-completion-script fish > ./out/completions/alice.fish
-    ./out/release-musl/alice --generate-completion-script zsh > ./out/completions/alice.zsh
+    @echo -e "\e[1;32m*\e[0m>>> Fetching project dependencies..."
+    swift package update
 
 test:
-	fd . tests --extension sh | cut -d'/' -f2 | cut -d'.' -f1 | fzf | perl -pe 's|$|.sh|; s|^|tests/|' | xargs -r bash
+    fd . tests --extension sh | cut -d'/' -f2 | cut -d'.' -f1 | fzf | perl -pe 's|$|.sh|; s|^|tests/|' | xargs -r bash
 
-dist: fetch
-	@echo "preparing distributable archive..."
-	{{buildcmd}} {{dynamicflags}} {{swiftc_args_opt}}
-	-rm -rf dist
-	mkdir dist
-	mkdir dist/completions
-	cp .build/release/alice dist/alice
-	llvm-strip dist/alice
-	./dist/alice --generate-completion-script bash > dist/completions/alice
-	./dist/alice --generate-completion-script fish > dist/completions/alice.fish
-	./dist/alice --generate-completion-script zsh > dist/completions/_alice
-	swift package plugin generate-manual
-	cp .build/plugins/GenerateManual/outputs/alice/alice.1 ./dist/alice.1
-	cp LICENSE.org dist/LICENSE.org
-	tar -f alice-0.1.0-amd64.tar -vc dist/alice dist/alice.1 dist/completions dist/LICENSE.org
-	-rm alice-0.1.0-amd64.tar.gz
-	pigz -vRp 12 alice-0.1.0-amd64.tar
+manual:
+    @echo -e "\e[1;32m*\e[0m>>> Building manual with scdoc..."
+    scdoc < doc/alice.1.scd > doc/alice.1
 
-dist-static: fetch
-	@echo "preparing distributable archive (musl)..."
-	{{buildcmd}} {{staticflags}} {{swiftc_args_opt}}
-	-rm -rf dist-musl
-	mkdir dist-musl
-	mkdir dist-musl/completions
-	cp .build/release/alice dist-musl/alice
-	llvm-strip dist-musl/alice
-	./dist-musl/alice --generate-completion-script bash > dist-musl/completions/alice
-	./dist-musl/alice --generate-completion-script fish > dist-musl/completions/alice.fish
-	./dist-musl/alice --generate-completion-script zsh > dist-musl/completions/_alice
-	swift package plugin generate-manual
-	cp .build/plugins/GenerateManual/outputs/alice/alice.1 ./dist-musl/alice.1
-	cp LICENSE.org dist-musl/LICENSE.org
-	tar -f alice-0.1.0-amd64-musl.tar -vc dist-musl/LICENSE.org dist-musl/alice dist-musl/alice.1 dist-musl/completions
-	-rm alice-0.1.0-amd64-musl.tar.gz
-	pigz -vRp 12 alice-0.1.0-amd64-musl.tar
+dist: clean fetch manual
+    @echo -e "\e[1;32m*\e[0m>>> Building release tarball..."
+    {{buildcmd}} {{dynamicflags}} {{swiftc_args_opt}}
+    mkdir dist dist/completions
+    cp .build/release/alice dist/alice
+    llvm-strip dist/alice
+    ./dist/alice --generate-completion-script bash > dist/completions/alice.bash
+    ./dist/alice --generate-completion-script fish > dist/completions/alice.fish
+    ./dist/alice --generate-completion-script zsh > dist/completions/alice.zsh
+    cp LICENSE.org dist/LICENSE.org
+    cp doc/alice.1 dist/alice.1
+    tar -f alice-v0.1.0-amd64.tar -vc dist/*
+    pigz -Rvp 12 alice-v0.1.0-amd64.tar
+ 
+dist-static: clean fetch manual
+    @echo -e "\e[1;32m*\e[0m>>> Building static release tarball..."
+    {{buildcmd}} {{staticflags}} {{swiftc_args_opt}}
+    mkdir dist-static dist-static/completions
+    cp .build/release/alice dist-static/alice
+    llvm-strip dist-static/alice
+    ./dist-static/alice --generate-completion-script bash > dist-static/completions/alice.bash
+    ./dist-static/alice --generate-completion-script fish > dist-static/completions/alice.fish
+    ./dist-static/alice --generate-completion-script zsh > dist-static/completions/alice.zsh
+    cp LICENSE.org dist-static/LICENSE.org
+    cp doc/alice.1 dist-static/alice.1
+    tar -f alice-v0.1.0-amd64-static.tar -vc dist-static/*
+    pigz -Rvp 12 alice-v0.1.0-amd64-static.tar
 
 clean:
-	swift package purge-cache
-	rm -rf .build
+    @echo -e "\e[1;32m*\e[0m>>> Cleaning project..."
+    -swift package purge-cache
+    -rm -rf .build
+    -rm *.tar.gz
+    -rm -rf dist dist-static

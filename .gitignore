@@ -10,7 +10,8 @@ Package.resolved
 out/
 /alice
 dist/
-dist-musl/
+dist-static/
 *.tar.gz
 **/*.tar.gz
 tests/log
+doc/alice.1
