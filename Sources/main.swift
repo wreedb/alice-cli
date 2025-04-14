@@ -8,29 +8,9 @@ import struct ArgumentParser.Option
 import struct ArgumentParser.CommandConfiguration
 
 let esc_reset: String = "\u{1B}[0m";
-let current_version: String = "0.1.0";
+let current_version: String = "0.3.0";
 
 typealias ColorPalette = [(name: String, hex: String, rgb: [Int], hsl: [Int], hwb: [Int])];
-
-// func term_truecolor() -> Bool
-// {
-//     if let value = ProcessInfo.processInfo.environment["COLORTERM"] {
-//         switch value {
-//         // Env var is set to 'truecolor'
-//         case "truecolor":
-//             return(true);
-//         // Env var found, but not set to 'truecolor'
-//         default:
-//             return(false);
-//         }
-    
-//     } else {
-//         // Env var isn't set
-//         return(false);
-//     }
-// }
-
-// let is_truecolorterm: Bool = term_truecolor();
 
 let palette_base: ColorPalette = [
     ( /* base: foreground */
@@ -607,6 +587,10 @@ struct Alice: ParsableCommand
     var helpColorNames: Bool = false;
     
     mutating func run() throws {
+        if showVersion {
+            usage_version();
+        }
+
         if helpColorNames {
             help_colorNames();
         }
